@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fer Balcázar — The CAP Lead</title>
+<meta name="description" content="Trabajas mucho. Avanzas poco. Eso tiene solución. Fer Balcázar — The CAP Lead.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #2B5FD9; --blue-dark: #1A3E99; --blue-mid: #1E4DB7;
+  --navy: #0D1B3E; --navy-mid: #0F2255;
+  --green: #00D4AA; --green-dim: #00a888;
+  --white: #FFFFFF; --off-white: #F7F9FC;
+  --gray-100: #F0F4F8; --gray-200: #DDE3EC;
+  --gray-400: #8896A8; --gray-600: #4A5568; --gray-dark: #2D3748;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--gray-dark); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(13,27,62,0.97); backdrop-filter: blur(16px); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { height: 28px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link { color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: var(--white); }
+.nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--green); color: var(--navy); font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; padding: 9px 22px; border-radius: 100px; text-decoration: none; transition: background 0.2s; }
+.nav-cta:hover { background: var(--green-dim); }
+@media (max-width: 640px) { .nav-links { display: none; } .nav { padding: 0 20px; } }
+
+/* HERO */
+.hero { min-height: 100vh; background: var(--navy); display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 100px 64px 80px; position: relative; overflow: hidden; gap: 60px; }
+.hero-bg { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 60% 80% at 100% 50%, rgba(43,95,217,0.15) 0%, transparent 60%), radial-gradient(ellipse 40% 40% at 10% 80%, rgba(0,212,170,0.07) 0%, transparent 60%); }
+.hero-content { position: relative; z-index: 1; padding-left: 24px; border-left: 2px solid var(--green); }
+.hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green); margin-bottom: 20px; display: block; }
+.hero h1 { font-family: 'Sora', sans-serif; font-size: clamp(32px, 3.8vw, 52px); font-weight: 800; color: var(--white); line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 8px; }
+.hero h1 em { font-style: normal; color: var(--green); }
+.hero-h1-sub { font-family: 'Sora', sans-serif; font-size: clamp(18px, 2vw, 26px); font-weight: 600; color: rgba(255,255,255,0.5); margin-bottom: 24px; letter-spacing: -0.01em; }
+.hero-sub { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 440px; line-height: 1.75; margin-bottom: 40px; }
+.hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--green); color: var(--navy); font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 100px; text-decoration: none; transition: background 0.2s, transform 0.2s; box-shadow: 0 4px 24px rgba(0,212,170,0.25); }
+.btn-primary:hover { background: var(--green-dim); transform: translateY(-1px); }
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+.btn-ghost:hover { color: var(--white); }
+.hero-right { position: relative; z-index: 1; }
+.stat-stack { display: flex; flex-direction: column; gap: 16px; }
+.stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px 26px; }
+.stat-card.accent { border-color: rgba(0,212,170,0.2); background: rgba(0,212,170,0.06); }
+.stat-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.stat-icon { width: 34px; height: 34px; border-radius: 8px; background: rgba(0,212,170,0.12); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.stat-num { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
+.stat-num span { color: var(--green); }
+.stat-label { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.4; }
+@media (max-width: 860px) { .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; } .stat-stack { flex-direction: row; flex-wrap: wrap; } .stat-card { flex: 1; min-width: 150px; } }
+
+/* SECTIONS */
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 40px; }
+@media (max-width: 640px) { .wrap { padding: 0 20px; } }
+.section { padding: 96px 0; }
+.section-alt { background: var(--off-white); }
+.section-dark { background: var(--navy); }
+.section-head { margin-bottom: 56px; }
+.eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.eyebrow::after { content: ''; width: 28px; height: 1.5px; background: var(--blue); opacity: 0.4; }
+.eyebrow.light { color: var(--green); }
+.eyebrow.light::after { background: var(--green); }
+.section-title { font-family: 'Sora', sans-serif; font-size: clamp(24px, 3vw, 38px); font-weight: 700; color: var(--navy); line-height: 1.15; letter-spacing: -0.015em; max-width: 580px; }
+.section-title.light { color: var(--white); }
+.section-body { font-size: 16px; color: var(--gray-600); max-width: 560px; margin-top: 14px; line-height: 1.8; }
+
+/* ICP */
+.icp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+@media (max-width: 700px) { .icp-grid { grid-template-columns: 1fr; } }
+.icp-card { background: var(--white); border: 1px solid var(--gray-200); border-top: 3px solid var(--blue); border-radius: 16px; padding: 28px 24px; }
+.icp-icon { font-size: 24px; margin-bottom: 14px; }
+.icp-card h4 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.icp-card p { font-size: 13px; color: var(--gray-600); line-height: 1.65; }
+
+/* PROGRAMAS */
+.programs-intro { font-size: 18px; font-family: 'Sora', sans-serif; font-weight: 600; color: var(--navy); margin-bottom: 36px; }
+.prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+@media (max-width: 700px) { .prog-grid { grid-template-columns: 1fr; } }
+.prog-card { border-radius: 20px; padding: 36px 32px; border: 1px solid var(--gray-200); background: var(--white); transition: box-shadow 0.2s, transform 0.2s; }
+.prog-card:hover { box-shadow: 0 12px 40px rgba(43,95,217,0.1); transform: translateY(-2px); }
+.prog-card.featured { background: var(--navy); border-color: rgba(255,255,255,0.06); grid-column: 1 / -1; }
+.prog-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 18px; }
+.prog-tag.b2c { background: rgba(43,95,217,0.1); color: var(--blue); }
+.prog-tag.b2b { background: rgba(0,212,170,0.12); color: var(--green-dim); }
+.prog-card h3 { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.prog-card.featured h3 { color: var(--white); }
+.prog-card > p { font-size: 14px; color: var(--gray-600); line-height: 1.7; margin-bottom: 20px; }
+.prog-card.featured > p { color: rgba(255,255,255,0.55); }
+.prog-bullets { display: flex; flex-direction: column; gap: 9px; }
+.prog-bullet { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; }
+.prog-bullet-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 6px; }
+.prog-card.featured .prog-bullet-dot { background: var(--green); }
+.prog-bullet-text { color: var(--gray-600); }
+.prog-card.featured .prog-bullet-text { color: rgba(255,255,255,0.65); }
+.prog-bullet-text strong { color: var(--navy); font-weight: 600; }
+.prog-card.featured .prog-bullet-text strong { color: var(--white); }
+.prog-ai { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--gray-200); font-size: 12px; color: var(--blue); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.prog-card.featured .prog-ai { border-color: rgba(255,255,255,0.08); color: var(--green); }
+.prog-cta-box { background: var(--off-white); border: 1px solid var(--gray-200); border-radius: 16px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.prog-cta-text h4 { font-family: 'Sora', sans-serif; font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.prog-cta-text p { font-size: 14px; color: var(--gray-600); max-width: 480px; line-height: 1.6; }
+
+/* CASOS */
+.casos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 24px; }
+.caso-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 20px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; text-decoration: none; display: block; }
+.caso-card:hover { box-shadow: 0 16px 48px rgba(13,27,62,0.12); transform: translateY(-3px); }
+.caso-top { background: var(--navy); padding: 28px; display: flex; align-items: flex-start; gap: 14px; }
+.caso-badge { width: 40px; height: 40px; border-radius: 10px; background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.caso-meta { flex: 1; }
+.caso-sector { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.caso-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--white); line-height: 1.3; }
+.caso-body { padding: 24px 28px; }
+.caso-result { font-size: 14px; color: var(--gray-600); line-height: 1.65; margin-bottom: 20px; }
+.caso-link { display: inline-flex; align-items: center; gap: 6px; font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue); }
+.caso-link svg { transition: transform 0.2s; }
+.caso-card:hover .caso-link svg { transform: translateX(4px); }
+.caso-soon { background: var(--white); border: 1px dashed var(--gray-200); border-radius: 20px; padding: 40px 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 200px; }
+.caso-soon-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 8px; }
+.caso-soon-text { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: var(--gray-dark); }
+
+/* SOBRE MÍ */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+@media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+.about-left p { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.85; margin-bottom: 18px; }
+.about-left p:last-child { margin-bottom: 0; }
+.about-left strong { color: var(--white); }
+.about-right { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.metric-row { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+.metric-num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--green); min-width: 72px; flex-shrink: 0; }
+.metric-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.4; }
+
+/* CTA FINAL */
+.cta-final { background: linear-gradient(135deg, var(--blue-mid) 0%, var(--navy) 100%); padding: 96px 0; text-align: center; }
+.cta-final h2 { font-family: 'Sora', sans-serif; font-size: clamp(26px, 3.5vw, 42px); font-weight: 800; color: var(--white); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; max-width: 600px; margin-inline: auto; }
+.cta-final p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 36px; }
+.cta-what { display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 36px; }
+.cta-what-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.6); }
+.cta-what-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+/* FOOTER */
+.footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06); padding: 28px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-logo { height: 24px; width: auto; opacity: 0.7; }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-link:hover { color: rgba(255,255,255,0.7); }
+.footer-right { font-size: 12px; color: rgba(255,255,255,0.2); }
+
+/* ANIMATIONS */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  .fade-up:nth-child(2) { transition-delay: 0.1s; }
+  .fade-up:nth-child(3) { transition-delay: 0.2s; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <img class="nav-logo" src="logo.png" alt="The CAP Lead">
+  <div class="nav-links">
+    <a class="nav-link" href="#programas">Programas</a>
+    <a class="nav-link" href="#casos">Casos</a>
+    <a class="nav-link" href="#sobre-mi">Sobre mí</a>
+    <a class="nav-cta" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">Agendar llamada</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Fer Balcázar · The CAP Lead</span>
+    <h1>Trabajas mucho.<br>Avanzas poco.<br><em>Eso tiene solución.</em></h1>
+    <p class="hero-h1-sub">Ocupado no es lo mismo que en control.</p>
+    <p class="hero-sub">Trabajo con directivos, líderes, emprendedores y profesionales en LATAM que trabajan mucho y avanzan poco. Les ayudo a pasar de estar ocupados a estar en control — con un sistema construido en 20 años de operación real.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">
+        Agenda una llamada
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      <a class="btn-ghost" href="#casos">Ver casos de éxito →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-stack">
+      <div class="stat-card accent">
+        <div class="stat-card-top"><div class="stat-icon">🏗️</div><div class="stat-num">20<span>+</span></div></div>
+        <div class="stat-label">años operando empresas — desde la trinchera hasta el comité directivo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top"><div class="stat-icon">⚙️</div><div class="stat-num">450<span>+</span></div></div>
+        <div class="stat-label">procesos documentados en finanzas, real estate, retail, TI y gobierno</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top"><div class="stat-icon">👥</div><div class="stat-num">~1K</div></div>
+        <div class="stat-label">personas formadas en marcos ágiles y liderazgo operativo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top"><div class="stat-icon">💰</div><div class="stat-num">$5.5<span>B</span></div></div>
+        <div class="stat-label">MDP en capital institucional habilitado vía gobierno corporativo y procesos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUIÉN -->
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Para quién</p>
+      <h2 class="section-title">Para quienes ya saben lo que quieren — pero el sistema no les responde.</h2>
+    </div>
+    <div class="icp-grid">
+      <div class="icp-card fade-up">
+        <div class="icp-icon">🏢</div>
+        <h4>Director o Gerente en empresa mediana</h4>
+        <p>Tu equipo depende de ti para cada decisión. No priorizan, no se comunican con criterio, no ejecutan sin que estés. Todo pasa por tu escritorio.</p>
+      </div>
+      <div class="icp-card fade-up">
+        <div class="icp-icon">🚀</div>
+        <h4>Emprendedor con equipo que no escala</h4>
+        <p>Creciste rápido pero la operación no siguió el ritmo. Lo que funcionaba con 3 personas no funciona con 15. Necesitas estructura, no más personas.</p>
+      </div>
+      <div class="icp-card fade-up">
+        <div class="icp-icon">⚡</div>
+        <h4>Profesional en modo reactivo permanente</h4>
+        <p>Trabajas mucho, avanzas poco. El día te come y al final de la semana no sabes bien qué moviste. Quieres operar con criterio, no con urgencia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMAS -->
+<section class="section" id="programas">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Programas</p>
+      <h2 class="section-title">Así es como podemos trabajar juntos.</h2>
+    </div>
+    <div class="prog-grid">
+      <div class="prog-card fade-up">
+        <span class="prog-tag b2c">B2C · Individual</span>
+        <h3>Booster CAP</h3>
+        <p>Tu sistema personal de operación desde la semana 1. Plan de acción, seguimiento semanal en Notion, indicadores y asesoría directa. Al terminar: sabes priorizar, delegar y comunicar con criterio.</p>
+        <div class="prog-bullets">
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>4 semanas</strong> · 4 sesiones semanales de 60 min</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">Diagnóstico CAP + hoja de ruta personalizada</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">Notion propio con seguimiento e indicadores</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">→ Mapeo de tus herramientas y diseño de ecosistema con IA</div></div>
+        </div>
+        <div class="prog-ai">🤖 Ecosistema de gestión con IA incluido</div>
+      </div>
+      <div class="prog-card fade-up">
+        <span class="prog-tag b2c">B2C · Individual</span>
+        <h3>Elite CAP</h3>
+        <p>Para quien quiere un cambio estructural. Rediseñamos cómo lideras, cómo priorizas y cómo comunicas. Acompañamiento profundo con acceso directo y seguimiento real.</p>
+        <div class="prog-bullets">
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>3 meses</strong> · 6 sesiones quincenales de 75 min</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">Acceso directo WhatsApp + Notion personalizado</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">Roadmap trimestral + evaluación CAP comparativa</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">→ Diseño de ecosistema operativo con IA integrado a tu día a día</div></div>
+        </div>
+        <div class="prog-ai">🤖 Ecosistema de gestión con IA incluido</div>
+      </div>
+      <div class="prog-card featured fade-up">
+        <span class="prog-tag b2b">B2B · Equipos</span>
+        <h3>The CAP Lead Process</h3>
+        <p>Implementación operativa con tu equipo completo. No es un taller. Es construcción real del sistema operativo de tu área — con diagnóstico, diseño, socialización y monitoreo.</p>
+        <div class="prog-bullets">
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>Diagnóstico</strong> — radiografía del equipo y sus fugas reales</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>Alineación</strong> — taller grupal para sacar lo que no se dice en juntas</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>Diseño</strong> — SOPs, roles y sistema de prioridades</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>Socialización</strong> — plenaria: qué cambia, cómo se mide, qué se espera</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text"><strong>Monitoreo</strong> — seguimiento de adopción y ajustes</div></div>
+          <div class="prog-bullet"><div class="prog-bullet-dot"></div><div class="prog-bullet-text">→ Análisis de herramientas del equipo y propuesta de ecosistema con IA</div></div>
+        </div>
+        <div class="prog-ai">Hemos visto resultados a partir de los 90 días — el tiempo depende del tamaño y madurez de la organización.</div>
+      </div>
+    </div>
+    <div class="prog-cta-box">
+      <div class="prog-cta-text">
+        <h4>El primer paso es sin costo.</h4>
+        <p>Un discovery de 45 minutos donde entiendo tu entorno y te entrego un plan de acción de alto nivel — aunque no sigamos trabajando juntos.</p>
+      </div>
+      <a class="btn-primary" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">
+        Agendar discovery
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS -->
+<section class="section section-alt" id="casos">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Casos de éxito</p>
+      <h2 class="section-title">Del punto A al punto B. Con evidencia.</h2>
+      <p class="section-body">No hablo de metodología en abstracto. Aquí están los resultados reales de equipos y profesionales que ya pasaron por el proceso.</p>
+    </div>
+    <div class="casos-grid">
+      <a class="caso-card" href="https://thecaplead.github.io/thecaplead-casos/" target="_blank">
+        <div class="caso-top">
+          <div class="caso-badge">🏠</div>
+          <div class="caso-meta">
+            <div class="caso-sector">Inmobiliario · Franquicia · LATAM</div>
+            <div class="caso-title">De equipo con potencial a equipo que ejecuta solo.</div>
+          </div>
+        </div>
+        <div class="caso-body">
+          <p class="caso-result">Un equipo con energía alta y resultados inconsistentes. En 90 días: sistema de seguimiento activo, canal único de gobernanza, especialización por nicho y cero caídas al cierre.</p>
+          <span class="caso-link">
+            Leer caso completo
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </span>
+        </div>
+      </a>
+      <div class="caso-soon">
+        <div class="caso-soon-label">Próximamente</div>
+        <div class="caso-soon-text">Caso: Profesional en transición que construyó su sistema de liderazgo y consiguió el cambio de posición que buscaba.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE MÍ -->
+<section class="section section-dark" id="sobre-mi">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-left">
+        <p class="eyebrow light">Sobre mí</p>
+        <h2 class="section-title light" style="margin-bottom:28px;">No soy consultor de teoría.<br>Soy operador.</h2>
+        <p>Hace 20 años tuve mi primera prueba de fuego. Era mi primer empleo y me llamaron a resolver un proyecto que salía del banco — cumplimiento normativo, exposición directa a la Dirección General. No era el más experimentado en la sala. Era el que tenía que sacar el proyecto.</p>
+        <p>Algo hice bien. Porque de ahí no paré.</p>
+        <p>Cinco años después ya tomaba decisiones, lideraba equipos y tenía presupuesto a cargo. En los siguientes 15 años acumulé una trayectoria de <strong>posiciones gerenciales y directivas</strong> en empresas del sector financiero, real estate, retail, TI, consultoría y gobierno — en algunos casos participando en comités institucionales donde reporté procesos, riesgos, control interno y transformación digital.</p>
+        <p>He visto las empresas desde la operación y desde la estrategia — y eso me enseñó algo que los consultores de teoría no tienen: <strong>sé comunicar hacia arriba y hacia abajo porque he vivido los dos lados.</strong></p>
+        <p>Hoy colaboro con <strong>uno de los grupos empresariales más importantes de México</strong>, construyo The CAP Lead — mi metodología de implementación operativa — y gestiono un negocio de e-commerce en EE.UU. Todo en paralelo. Todo con sistema.</p>
+        <p><strong>Eso es exactamente lo que enseño.</strong></p>
+      </div>
+      <div class="about-right">
+        <div class="metric-row fade-up"><div class="metric-num">20+</div><div class="metric-desc">años de experiencia ejecutiva en transformación operativa y digital</div></div>
+        <div class="metric-row fade-up"><div class="metric-num">450+</div><div class="metric-desc">procesos documentados en finanzas, real estate, retail, TI y gobierno</div></div>
+        <div class="metric-row fade-up"><div class="metric-num">~1,000</div><div class="metric-desc">personas formadas en marcos ágiles y liderazgo operativo</div></div>
+        <div class="metric-row fade-up"><div class="metric-num">$5.5B</div><div class="metric-desc">MDP en capital institucional habilitado vía gobierno corporativo y procesos</div></div>
+        <div class="metric-row fade-up"><div class="metric-num">25+</div><div class="metric-desc">organizaciones impactadas con The CAP Lead en México y LATAM</div></div>
+        <div class="metric-row fade-up"><div class="metric-num">6+</div><div class="metric-desc">ERPs y sistemas de gestión implementados a lo largo de la trayectoria</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="wrap">
+    <h2>¿Listo para pasar de ocupado a en control?</h2>
+    <p>45 minutos de discovery. Sin costo. Te llevas un plan de acción aunque no sigamos.</p>
+    <div class="cta-what">
+      <div class="cta-what-item"><div class="cta-what-dot"></div>Sin presión</div>
+      <div class="cta-what-item"><div class="cta-what-dot"></div>Sin venta disfrazada de consultoría</div>
+      <div class="cta-what-item"><div class="cta-what-dot"></div>Con un entregable real</div>
+    </div>
+    <a class="btn-primary" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">
+      Agenda tu discovery
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img class="footer-logo" src="logo.png" alt="The CAP Lead">
+  <div class="footer-links">
+    <a class="footer-link" href="https://www.linkedin.com/in/ferbalcazarmendoza" target="_blank">LinkedIn</a>
+    <a class="footer-link" href="https://thecaplead.github.io/thecaplead-casos/" target="_blank">Casos de éxito</a>
+    <a class="footer-link" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">Agendar llamada</a>
+  </div>
+  <div class="footer-right">© 2026 Fer Balcázar · The CAP Lead</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
