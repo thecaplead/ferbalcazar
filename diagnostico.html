@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico CAP — Fer Balcázar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0D1B3E;
+  --blue: #2B5FD9;
+  --green: #00D4AA;
+  --green-dark: #00a888;
+  --bg: #f4f6fb;
+  --text: #1a2e4a;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --white: #ffffff;
+  --score-green: #4caf50;
+  --score-blue: #2196f3;
+  --score-orange: #ff9800;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  background: rgba(13,27,62,0.97);
+  backdrop-filter: blur(12px);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo { height: 28px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-link {
+  color: rgba(255,255,255,0.65);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--white); }
+.nav-cta {
+  background: var(--green);
+  color: var(--navy);
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--green-dark); }
+@media (max-width: 640px) { .nav-links { display: none; } .nav { padding: 14px 20px; } }
+
+/* HERO */
+.hero {
+  background: linear-gradient(150deg, var(--navy) 0%, #0f2255 60%, #1a3e99 100%);
+  padding: 80px 24px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,212,170,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,212,170,0.12);
+  border: 1px solid rgba(0,212,170,0.3);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+.hero h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.hero h1 em { font-style: normal; color: var(--green); }
+.hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+.hero-meta-item span { color: var(--green); font-weight: 600; }
+
+/* MAIN CONTAINER */
+.diag-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* PROGRESS */
+.progress-wrap { margin-bottom: 36px; }
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-400);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.progress-count {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.progress-bar {
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px 36px;
+  box-shadow: 0 4px 24px rgba(13,27,62,0.08);
+  border: 1px solid var(--gray-200);
+  animation: fadeUp 0.35s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.q-number {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-number::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+}
+.q-text {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(18px, 3vw, 22px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 28px;
+}
+.q-options { display: flex; flex-direction: column; gap: 12px; }
+.q-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg);
+  text-align: left;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+.q-option:hover {
+  border-color: var(--blue);
+  background: rgba(43,95,217,0.04);
+}
+.q-option.selected {
+  border-color: var(--blue);
+  background: rgba(43,95,217,0.07);
+}
+.q-option.selected .q-radio { background: var(--blue); border-color: var(--blue); }
+.q-option.selected .q-radio::after { opacity: 1; }
+.q-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--gray-200);
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  transition: all 0.2s;
+}
+.q-radio::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--white);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.q-option-text {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.q-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.btn-next.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.btn-next.active:hover {
+  background: var(--blue);
+  transform: translateX(2px);
+}
+
+/* EMAIL GATE */
+.gate-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 40px 36px;
+  box-shadow: 0 4px 24px rgba(13,27,62,0.08);
+  border: 1px solid var(--gray-200);
+  text-align: center;
+  display: none;
+  animation: fadeUp 0.35s ease both;
+}
+.gate-icon { font-size: 48px; margin-bottom: 20px; }
+.gate-card h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.gate-card p {
+  font-size: 15px;
+  color: var(--gray-600);
+  margin-bottom: 32px;
+  line-height: 1.7;
+  max-width: 440px;
+  margin-inline: auto;
+  margin-bottom: 32px;
+}
+.gate-form { display: flex; flex-direction: column; gap: 14px; max-width: 400px; margin: 0 auto; }
+.gate-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s;
+  outline: none;
+}
+.gate-input:focus { border-color: var(--blue); }
+.gate-input::placeholder { color: var(--gray-400); }
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background: var(--green);
+  color: var(--navy);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-submit:hover { background: var(--green-dark); transform: translateY(-1px); }
+.gate-note {
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-top: 8px;
+}
+
+/* RESULT */
+.result-card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(13,27,62,0.08);
+  border: 1px solid var(--gray-200);
+  display: none;
+  animation: fadeUp 0.35s ease both;
+}
+.result-header {
+  padding: 36px;
+  text-align: center;
+}
+.result-score-wrap {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-family: 'Sora', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--white);
+}
+.result-level {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.result-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+.result-desc {
+  font-size: 15px;
+  color: var(--gray-600);
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.result-steps {
+  padding: 32px 36px;
+  background: var(--bg);
+  border-top: 1px solid var(--gray-200);
+}
+.result-steps h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.result-step-list { display: flex; flex-direction: column; gap: 12px; }
+.result-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.55;
+}
+.result-step-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.result-cta {
+  padding: 28px 36px;
+  text-align: center;
+  border-top: 1px solid var(--gray-200);
+}
+.result-cta p {
+  font-size: 14px;
+  color: var(--gray-600);
+  margin-bottom: 16px;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green);
+  color: var(--navy);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 15px 32px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 20px rgba(0,212,170,0.3);
+}
+.btn-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+/* FOOTER */
+.footer {
+  background: var(--navy);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footer-logo { height: 24px; opacity: 0.7; }
+.footer-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.2); }
+.footer-text { font-size: 12px; color: rgba(255,255,255,0.35); }
+.footer-text span { color: var(--green); }
+
+@media (max-width: 500px) {
+  .q-card, .gate-card, .result-card { padding: 28px 20px; }
+  .result-steps, .result-cta { padding: 24px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .q-card, .gate-card, .result-card { animation: none; }
+  .progress-fill { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <img class="nav-logo" src="logo.png" alt="The CAP Lead">
+  <div class="nav-links">
+    <a class="nav-link" href="https://www.linkedin.com/in/ferbalcazarmendoza" target="_blank">LinkedIn</a>
+    <a class="nav-link" href="index.html#programas">Programas</a>
+    <a class="nav-link" href="index.html#casos">Casos</a>
+    <a class="nav-cta" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">Agendar llamada</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Diagnóstico gratuito · The CAP Lead</div>
+    <h1>¿Estás cargando con más<br>de lo que te <em>corresponde?</em></h1>
+    <p class="hero-sub">10 preguntas · 5 minutos · Diagnóstico personalizado gratuito</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">🎯 <span>10 preguntas</span></div>
+      <div class="hero-meta-item">⚡ <span>5 minutos</span></div>
+      <div class="hero-meta-item">📊 <span>Resultado personalizado</span></div>
+      <div class="hero-meta-item">🔒 <span>Sin costo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="diag-container">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-header">
+      <span class="progress-label">Progreso</span>
+      <span class="progress-count" id="progressCount">Pregunta 1 de 10</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- QUESTION CARD -->
+  <div class="q-card" id="questionCard">
+    <div class="q-number" id="qNumber">Pregunta 1</div>
+    <h2 class="q-text" id="qText"></h2>
+    <div class="q-options" id="qOptions"></div>
+    <div class="q-nav">
+      <button class="btn-next" id="btnNext">
+        Siguiente
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- EMAIL GATE -->
+  <div class="gate-card" id="gateCard">
+    <div class="gate-icon">📊</div>
+    <h2>Tu diagnóstico está listo.</h2>
+    <p>Déjame tu nombre y correo para mostrarte tu resultado personalizado — y enviarte un plan de acción concreto basado en tus respuestas.</p>
+    <div class="gate-form">
+      <input class="gate-input" id="gateName" type="text" placeholder="Tu nombre" required>
+      <input class="gate-input" id="gateEmail" type="email" placeholder="Tu correo electrónico" required>
+      <button class="btn-submit" id="btnSubmit">
+        Ver mi resultado
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+      <p class="gate-note">Sin spam. Solo tu diagnóstico y recursos relevantes.</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
+      <div class="result-score-wrap" id="resultScoreWrap"></div>
+      <div class="result-level" id="resultLevel"></div>
+      <h2 class="result-title" id="resultTitle"></h2>
+      <p class="result-desc" id="resultDesc"></p>
+    </div>
+    <div class="result-steps">
+      <h3>Tus siguientes pasos</h3>
+      <div class="result-step-list" id="resultSteps"></div>
+    </div>
+    <div class="result-cta">
+      <p>Un diagnóstico de 45 minutos sin costo — y sales con un plan de acción concreto.</p>
+      <a class="btn-cta" href="https://calendar.app.google/N97gKB7XvUp3aGWVA" target="_blank">
+        Agendar mi diagnóstico gratuito →
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img class="footer-logo" src="logo.png" alt="The CAP Lead">
+  <div class="footer-divider"></div>
+  <p class="footer-text">Claridad · Autogestión · <span>Potenciación</span></p>
+</footer>
+
+<script>
+const QUESTIONS = [
+  {
+    text: "Cuando termina tu semana laboral, ¿cómo te sientes la mayoría de las veces?",
+    options: [
+      { text: "Satisfecho — hice lo que me correspondía", pts: 0 },
+      { text: "Cansado pero conforme con mis avances", pts: 1 },
+      { text: "Agotado — trabajé mucho pero siento que no avancé", pts: 2 },
+      { text: "Vacío — di todo y nadie lo notó", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Con qué frecuencia asumes responsabilidades que no son tuyas?",
+    options: [
+      { text: "Casi nunca — cada quien carga con lo suyo", pts: 0 },
+      { text: "A veces — cuando alguien falla, intervengo", pts: 1 },
+      { text: "Seguido — soy el que destapa los problemas de todos", pts: 2 },
+      { text: "Siempre — si yo no lo hago, nadie lo hace", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Qué tan claro tienes hacia dónde va tu empresa o tu carrera en los próximos 12 meses?",
+    options: [
+      { text: "Muy claro — tengo un plan definido y lo estoy ejecutando", pts: 0 },
+      { text: "Claro en lo general — aunque hay cosas por afinar", pts: 1 },
+      { text: "Confuso — hay muchas prioridades y no sé cuál atender primero", pts: 2 },
+      { text: "Sin claridad — voy respondiendo al día a día sin rumbo fijo", pts: 3 }
+    ]
+  },
+  {
+    text: "Cuando te vas de vacaciones o te ausentas, ¿qué pasa con tu trabajo o empresa?",
+    options: [
+      { text: "Todo funciona — el equipo o sistema opera sin mí", pts: 0 },
+      { text: "Funciona con algunos ajustes menores", pts: 1 },
+      { text: "Hay problemas que me tienen que consultar", pts: 2 },
+      { text: "Todo se detiene — dependen completamente de mí", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Cómo describes tu relación con las decisiones en tu trabajo?",
+    options: [
+      { text: "Tomo decisiones con autonomía y confianza", pts: 0 },
+      { text: "Decido en lo mío, aunque a veces busco validación", pts: 1 },
+      { text: "Me cuesta decidir — hay mucha ambigüedad o política alrededor", pts: 2 },
+      { text: "Casi no puedo decidir — todo pasa por otras personas que me bloquean", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Qué tan visible es tu trabajo y tu valor ante quienes toman decisiones?",
+    options: [
+      { text: "Muy visible — me reconocen y toman en cuenta mi opinión", pts: 0 },
+      { text: "Medianamente — algunos lo ven, otros no", pts: 1 },
+      { text: "Poco — trabajo mucho pero no siento que me vean", pts: 2 },
+      { text: "Invisible — cargo con todo y el crédito va a otros", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Cómo están definidos los procesos en tu área o empresa?",
+    options: [
+      { text: "Bien definidos — hay claridad de quién hace qué y cuándo", pts: 0 },
+      { text: "Parcialmente — algunas cosas claras, otras dependen de la persona", pts: 1 },
+      { text: "Poco definidos — operamos de memoria y por costumbre", pts: 2 },
+      { text: "Sin definir — el caos es el día a día", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Cuándo fue la última vez que dijiste 'no' a una responsabilidad que no te correspondía?",
+    options: [
+      { text: "Reciente — sé poner límites sin culpa", pts: 0 },
+      { text: "Hace algunos meses — lo intento pero no siempre puedo", pts: 1 },
+      { text: "Hace mucho — me cuesta mucho decir que no", pts: 2 },
+      { text: "Nunca — siento que si no lo hago yo, habrá consecuencias", pts: 3 }
+    ]
+  },
+  {
+    text: "¿Cómo reacciona tu equipo o entorno cuando hay un problema?",
+    options: [
+      { text: "Lo resuelven solos — tienen criterio y autonomía", pts: 0 },
+      { text: "Lo intentan y solo escalan lo que realmente necesita mi atención", pts: 1 },
+      { text: "Me consultan casi todo — dependen mucho de mí", pts: 2 },
+      { text: "El problema siempre termina en mi escritorio sin importar de quién sea", pts: 3 }
+    ]
+  },
+  {
+    text: "Si tuvieras que calificar tu nivel de energía y motivación hoy, ¿dónde estarías?",
+    options: [
+      { text: "Alto — estoy enfocado y con claridad de hacia dónde voy", pts: 0 },
+      { text: "Medio — hay días buenos pero también días que me pesan", pts: 1 },
+      { text: "Bajo — estoy cansado y siento que las cosas no avanzan", pts: 2 },
+      { text: "En reserva — llevo tiempo así y ya no sé cuánto aguanto más", pts: 3 }
+    ]
+  }
+];
+
+const RESULTS = [
+  {
+    range: [0, 9],
+    color: '#4caf50',
+    level: 'Base sólida',
+    title: 'Tienes base sólida — es momento de escalar',
+    desc: 'Tu operación tiene estructura y tú tienes claridad. Eso te pone en el 20% de profesionales y empresas que ya construyeron una base real. El siguiente paso no es ordenar — es potenciar.',
+    steps: [
+      'Define tu siguiente movimiento con métricas claras',
+      'Identifica qué procesos pueden delegarse completamente',
+      'Construye visibilidad hacia arriba — tu trabajo merece ser visto',
+      'Explora cómo replicar tu sistema a más personas o áreas'
+    ]
+  },
+  {
+    range: [10, 20],
+    color: '#2196f3',
+    level: 'Conocimiento sin sistema',
+    title: 'Tienes el conocimiento — te falta el sistema',
+    desc: 'Sabes lo que hay que hacer. El problema es que no siempre puedes hacerlo porque hay bloqueos — en los procesos, en las decisiones o en cómo te perciben. Con el sistema correcto, todo lo que ya sabes empieza a generar resultados.',
+    steps: [
+      'Clarifica tu objetivo de los próximos 90 días — uno solo, medible',
+      'Identifica el proceso o responsabilidad que más te drena energía',
+      'Define qué necesitas de tu entorno para avanzar sin fricción',
+      'Construye un speech de tu valor ante quienes toman decisiones'
+    ]
+  },
+  {
+    range: [21, 30],
+    color: '#ff9800',
+    level: 'Saturación operativa',
+    title: 'Estás cargando con todo — y eso tiene solución',
+    desc: 'Das todo. Nadie lo nota. Y mañana vuelves a dar todo. Eso no es falta de talento ni de esfuerzo — es falta de sistema, de claridad y de estructura. La buena noticia: esto se puede cambiar, más rápido de lo que crees.',
+    steps: [
+      'Para. Antes de seguir ejecutando, necesitas claridad de hacia dónde vas',
+      'Identifica las 3 responsabilidades que más te drenan y que no son tuyas',
+      'Define qué necesitas que cambie en los próximos 30 días — sé específico',
+      'Agenda una conversación con alguien que ya haya salido de donde estás tú'
+    ]
+  }
+];
+
+// State
+let current = 0;
+let answers = [];
+let totalScore = 0;
+
+// DOM refs
+const progressFill = document.getElementById('progressFill');
+const progressCount = document.getElementById('progressCount');
+const progressWrap = document.getElementById('progressWrap');
+const questionCard = document.getElementById('questionCard');
+const qNumber = document.getElementById('qNumber');
+const qText = document.getElementById('qText');
+const qOptions = document.getElementById('qOptions');
+const btnNext = document.getElementById('btnNext');
+const gateCard = document.getElementById('gateCard');
+const resultCard = document.getElementById('resultCard');
+const btnSubmit = document.getElementById('btnSubmit');
+const gateName = document.getElementById('gateName');
+const gateEmail = document.getElementById('gateEmail');
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  qNumber.textContent = `Pregunta ${current + 1}`;
+  qText.textContent = q.text;
+  qOptions.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-option';
+    btn.innerHTML = `<div class="q-radio"></div><span class="q-option-text">${opt.text}</span>`;
+    btn.addEventListener('click', () => selectOption(i, opt.pts));
+    qOptions.appendChild(btn);
+  });
+
+  // Update progress
+  const pct = (current / QUESTIONS.length) * 100;
+  progressFill.style.width = pct + '%';
+  progressCount.textContent = `Pregunta ${current + 1} de ${QUESTIONS.length}`;
+
+  // Reset next btn
+  btnNext.classList.remove('active');
+  answers[current] = null;
+
+  // Trigger animation
+  questionCard.style.animation = 'none';
+  questionCard.offsetHeight;
+  questionCard.style.animation = '';
+}
+
+function selectOption(idx, pts) {
+  document.querySelectorAll('.q-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  answers[current] = pts;
+  btnNext.classList.add('active');
+}
+
+btnNext.addEventListener('click', () => {
+  if (answers[current] === null) return;
+  current++;
+  if (current < QUESTIONS.length) {
+    renderQuestion();
+  } else {
+    showGate();
+  }
+});
+
+function showGate() {
+  progressFill.style.width = '100%';
+  progressCount.textContent = '¡Diagnóstico completado!';
+  questionCard.style.display = 'none';
+  gateCard.style.display = 'block';
+}
+
+btnSubmit.addEventListener('click', () => {
+  const name = gateName.value.trim();
+  const email = gateEmail.value.trim();
+  if (!name || !email || !email.includes('@')) {
+    gateName.style.borderColor = name ? '' : 'var(--score-orange)';
+    gateEmail.style.borderColor = (email && email.includes('@')) ? '' : 'var(--score-orange)';
+    return;
+  }
+  totalScore = answers.reduce((sum, pts) => sum + (pts || 0), 0);
+  showResult(name);
+});
+
+function showResult(name) {
+  gateCard.style.display = 'none';
+  progressWrap.style.display = 'none';
+
+  const result = RESULTS.find(r => totalScore >= r.range[0] && totalScore <= r.range[1]);
+
+  // Score circle
+  document.getElementById('resultScoreWrap').style.background = result.color;
+  document.getElementById('resultScoreWrap').textContent = totalScore;
+
+  document.getElementById('resultLevel').style.color = result.color;
+  document.getElementById('resultLevel').textContent = result.level;
+  document.getElementById('resultTitle').textContent = result.title;
+  document.getElementById('resultDesc').textContent = result.desc;
+
+  const stepList = document.getElementById('resultSteps');
+  stepList.innerHTML = result.steps.map(s => `
+    <div class="result-step">
+      <div class="result-step-dot" style="background:${result.color}"></div>
+      <span>${s}</span>
+    </div>
+  `).join('');
+
+  resultCard.style.display = 'block';
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // MailerLite integration (non-blocking)
+  try {
+    if (typeof window.mlSend === 'function') {
+      window.mlSend({ name, email, fields: { score: totalScore, level: result.level } });
+    }
+  } catch(e) {}
+}
+
+// Init
+renderQuestion();
+</script>
+
+<!-- MailerLite -->
+<script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10bea8ccd9b2b8bcf6788e5ba1ec" type="text/javascript" async></script>
+
+</body>
+</html>
